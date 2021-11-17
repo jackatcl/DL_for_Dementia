@@ -4,4 +4,3 @@
 *.pklz
 *.pth.tar
 **/.ipynb_checkpoints
-*.ipynb
