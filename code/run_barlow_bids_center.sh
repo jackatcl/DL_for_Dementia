@@ -1,7 +1,7 @@
 #!/bin/bash
-#SBATCH --job-name=pre_vol
-#SBATCH --ntasks=8
-#SBATCH --mem-per-cpu=16G
+#SBATCH --job-name=barlow_center
+#SBATCH --ntasks=1
+#SBATCH --mem-per-cpu=32G
 #SBATCH --time=14-24:00:00
 #SBATCH --output=slurm_%j.out
 
@@ -19,4 +19,4 @@ export FREESURFER_HOME=/gpfs/share/apps/freesurfer/6.0.0/freesurfer
 source $FREESURFER_HOME/SetUpFreeSurfer.sh
 export SPM_HOME=/gpfs/data/razavianlab/skynet/alzheimers/spm12
 matlab -nodesktop -nosplash -singleCompThread -r "addpath('/gpfs/data/razavianlab/skynet/alzheimers/spm12');exit"
-clinica run t1-volume-tissue-segmentation '/gpfs/data/razavianlab/data/mri/nyu/barlow_bids_t1_unprocessed_volume_2_centered' '/gpfs/data/razavianlab/data/mri/nyu/barlow_bids_t1_preprocess_A_run_2' -np 8 -tsv '/gpfs/data/razavianlab/data/mri/nyu/barlow_bids_t1_unprocessed_volume_2_centered/participant_table.tsv' -wd '/gpfs/data/razavianlab/data/mri/nyu/WD_barlow_bids_t1_preprocess_A_run_2' 
+clinica iotools center-nifti /gpfs/data/razavianlab/data/mri/nyu/barlow_bids_t1_unprocessed_volume_2 /gpfs/data/razavianlab/data/mri/nyu/barlow_bids_t1_unprocessed_volume_2_centered --modality t1w

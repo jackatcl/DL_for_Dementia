@@ -1,7 +1,7 @@
 #!/bin/bash
-#SBATCH --job-name=adni_preprocess
-#SBATCH --ntasks=24
-#SBATCH --mem-per-cpu=4G
+#SBATCH --job-name=convert
+#SBATCH --ntasks=1
+#SBATCH --mem-per-cpu=8G
 #SBATCH --time=14-24:00:00
 #SBATCH --output=slurm_%j.out
 
