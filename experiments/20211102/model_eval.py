@@ -219,9 +219,9 @@ if __name__ == '__main__':
 
     # Load model
     model = build_model(cfg)
-    model_file_name = 'linear_finetune_train_perc_100.0_expansion_8'
+    model_file_name = 'linear_retrain/linear_retrain_train_perc_100.0_expansion_8'
     # model_file_name = 'volume_retrain_train_perc_100.0_expansion_0'
 
-    all_acc, all_balanced_acc, all_auc = evaluation_models(model_file_name,Test_loader, expansion_list = [8], use_age = True, norm_type= 'Instance')
+    all_acc, all_balanced_acc, all_auc = evaluation_models(model_file_name,Test_loader, expansion_list = [8], use_age = False, norm_type= 'Instance')
     test_model(all_acc, all_balanced_acc,all_auc)
 
