@@ -4,3 +4,7 @@
 *.pklz
 *.pth.tar
 **/.ipynb_checkpoints
+**/temp
+*.log
+*.nii.gz
+*.nii
