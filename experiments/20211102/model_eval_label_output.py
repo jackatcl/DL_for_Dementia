@@ -198,7 +198,7 @@ if __name__ == '__main__':
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
     # load config
-    config_path = '/gpfs/home/lc3424/capstone/2021_dementia/lc3424_workspace/experiments/20211102/config.yaml'
+    config_path = '/gpfs/home/lc3424/capstone/2021_dementia/lc3424_workspace/experiments/20211102/configs/config.yaml'
     with open(config_path, 'r') as f:
         cfg = yaml.load(f)
 
@@ -208,7 +208,7 @@ if __name__ == '__main__':
 
 
     # path to tsv file containing pre-processed image file path and label
-    path_to_tsv = '/gpfs/home/lc3424/capstone/2021_dementia/lc3424_workspace/experiments/20211102/volume_label_with_file_path_with_age_20211102_test.tsv'
+    path_to_tsv = '/gpfs/home/lc3424/capstone/2021_dementia/lc3424_workspace/experiments/20211102/t1_flair_file_match_with_reg_test.tsv'
 
     Test_dataset = ADNI_3D(path_label_file=path_to_tsv,  n_label = cfg['model']['n_label'])
     Test_loader = torch.utils.data.DataLoader(
@@ -220,12 +220,12 @@ if __name__ == '__main__':
     # Load model
     model = build_model(cfg)
     # model_file_name = 'original/age_expansion_8'
-    model_file_name = 'volume_finetune/volume_finetune_train_perc_100.0_expansion_8'
+    model_file_name = 'volume_finetune_flair/volume_finetune_flair_train_perc_100.0_expansion_8'
 
     out = evaluation_models(model_file_name,Test_loader, expansion_list = [8], use_age = False, norm_type= 'Instance')
     res = Test_dataset.subject_tsv
     ans = {'res': res, 'out': out}
-    with open('res.pkl', 'wb') as output_file:
+    with open('res_flair_finetune.pkl', 'wb') as output_file:
         pickle.dump(ans, output_file)
 
     # res.to_csv('res.tsv', sep='\t')
