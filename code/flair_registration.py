@@ -11,6 +11,7 @@ import timeit
 
 start = timeit.timeit()
 out_dir = '/gpfs/data/razavianlab/data/mri/nyu/barlow_flair_registered'
+# out_dir = ''
 os.chdir('/gpfs/home/lc3424/capstone/2021_dementia/lc3424_workspace/code')
 
 if not os.path.exists(out_dir):
@@ -20,7 +21,6 @@ if not os.path.exists(out_dir):
 t1_flair_file = pd.read_csv('t1_flair_file_match.tsv', sep='\t')
 
 for i in range(t1_flair_file.shape[0]):
-    print(i)
     if i % 100 == 0:
         end = timeit.timeit()
         print('{} scans processed with time elapsed {}s'.format(i, end - start))
@@ -50,7 +50,7 @@ for i in range(t1_flair_file.shape[0]):
         out_file_path = os.path.join(out_dir, out_file)
         mat_file_path = os.path.join(out_dir, out_file.replace('.nii.gz', 'transformation.mat'))
         t1_flair_file.loc[i, 'flair_registered_file_path'] = out_file_path
-        subprocess.call(['flirt', '-in', 'temp/t1_reorient.nii.gz', '-ref', 'temp/flair_reorient.nii.gz', '-out', out_file_path, '-omat', mat_file_path, '-dof', '6'])
+        subprocess.call(['flirt', '-in', 'temp/flair_reorient.nii.gz', '-ref', 'temp/t1_reorient.nii.gz', '-out', out_file_path, '-omat', mat_file_path, '-dof', '6'])
     except Exception:
         print('Error processing FLIRT with:\nT1 file: {}\nand\nFLAIR file: {}'.format(t1, flair))
         print(Exception)

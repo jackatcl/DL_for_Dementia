@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=lin_ft
+#SBATCH --job-name=vol_retrain_flair
 #SBATCH --partition=gpu4_medium
 #SBATCH --nodes=1
 #SBATCH --tasks-per-node=1
@@ -23,4 +23,4 @@ export LANG=en_US.UTF-8
 source /gpfs/data/razavianlab/capstone/2021_dementia/env_ben/miniconda3/bin/activate
 conda activate env_gpu_py36
 
-conda run -n env_gpu_py36 python3 /gpfs/home/lc3424/capstone/2021_dementia/lc3424_workspace/experiments/20211102/main_linear_finetune.py --config "/gpfs/home/lc3424/capstone/2021_dementia/lc3424_workspace/experiments/20211102/configs/config_linear_finetune.yaml"
+conda run -n env_gpu_py36 python3 /gpfs/home/lc3424/capstone/2021_dementia/lc3424_workspace/experiments/20211102/main_volume_retrain.py --config "/gpfs/home/lc3424/capstone/2021_dementia/lc3424_workspace/experiments/20211102/configs/config_volume_retrain_flair.yaml"
