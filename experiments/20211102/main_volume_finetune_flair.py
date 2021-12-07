@@ -86,7 +86,8 @@ def main():
     model_dict = main_model.state_dict()
     model_dict.update(pretrained_dict)
     main_model.load_state_dict(model_dict)
-
+    
+    # comment in to finetune the FC layer only
     for name, param in main_model.named_parameters():
         if 'classifier.classifier.LinearClassifier' not in name:
             param.requires_grad = False

@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=t1_ft
+#SBATCH --job-name=cascaded
 #SBATCH --partition=gpu4_dev
 #SBATCH --nodes=1
 #SBATCH --tasks-per-node=1
@@ -23,4 +23,4 @@ export LANG=en_US.UTF-8
 source /gpfs/data/razavianlab/capstone/2021_dementia/env_ben/miniconda3/bin/activate
 conda activate env_gpu_py36
 
-conda run -n env_gpu_py36 python3 /gpfs/home/lc3424/capstone/2021_dementia/lc3424_workspace/experiments/20211102/main_volume_finetune.py --config "/gpfs/home/lc3424/capstone/2021_dementia/lc3424_workspace/experiments/20211102/configs/config_volume_finetune.yaml"
+conda run -n env_gpu_py36 python3 /gpfs/home/lc3424/capstone/2021_dementia/lc3424_workspace/experiments/20211102/cascaded_model.py --config "/gpfs/home/lc3424/capstone/2021_dementia/lc3424_workspace/experiments/20211102/configs/config_volume_finetune_cascaded.yaml"

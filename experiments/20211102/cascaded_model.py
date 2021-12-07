@@ -15,7 +15,7 @@ import torch.utils.data
 import torch.utils.data.distributed
 import torchvision.transforms as transforms
 from torch.optim.lr_scheduler import LambdaLR,MultiStepLR
-from models.build_model import build_model
+from models.build_model_cascaded import build_model_cascaded
 from torchvision import utils
 import os
 import datasets
@@ -23,8 +23,9 @@ import models
 import math
 import yaml
 import numpy as np
+from torchsummary import summary
 
-from datasets.adni_3d import ADNI_3D
+from datasets.adni_3d_t1_flair import ADNI_3D_T1_FLAIR
 
 from lib.Loss import get_loss_criterion
 from lib.utils import DataParallel_withLoss, get_auc_data, accuracy, AverageMeter, balanced_accuracy_score, clip_gradients, visualize_visdom
@@ -58,7 +59,7 @@ with open(arguments.config, 'r') as f:
 
 if arguments.expansion > 0:
     cfg['model']['expansion'] = arguments.expansion
-cfg['data']['percentage_usage'] = arguments.percentage_usage
+cfg['t1_data']['percentage_usage'] = arguments.percentage_usage
 cfg['file_name'] = cfg['file_name']+'_train_perc_'+str(arguments.percentage_usage*100)+'_expansion_'+str(arguments.expansion)+'.pth.tar' 
 cfg['exp_name'] = cfg['exp_name']+'_train_perc_'+str(arguments.percentage_usage*100)+'_expansion_'+str(arguments.expansion)
 
@@ -76,24 +77,37 @@ def main():
     if torch.cuda.device_count()>0:
         torch.cuda.manual_seed(seed)
 
-    main_model = build_model(cfg)
-    
-    # load pre-trainted
-    best_model_dir = '/gpfs/home/lc3424/capstone/2021_dementia/lc3424_workspace/experiments/20211102/saved_model/original/'
-    model_name = 'age_expansion_8'
-    pretrained_dict = torch.load(best_model_dir+model_name + '_model_low_loss.pth.tar',map_location='cpu')['state_dict']
-    pretrained_dict = {k[6:]: v for k, v in pretrained_dict.items() if 'classifier.classifier.LinearClassifier' not in k}
-    model_dict = main_model.state_dict()
-    model_dict.update(pretrained_dict)
-    main_model.load_state_dict(model_dict)
+    main_model = build_model_cascaded(cfg)
+
+
+    # load pre-trainted t1
+    t1_pretrained_dict = torch.load(cfg['training_parameters']['t1_pretrain'],map_location='cpu')['state_dict']
+    t1_pretrained_dict = {'.'.join(k[6:].split('.')[1:]): v for k, v in t1_pretrained_dict.items() if 'classifier.classifier.LinearClassifier' not in k}
+    t1_model_dict = main_model.t1_image_embedding_model.state_dict()
+    print(t1_model_dict.keys())
+    t1_model_dict.update(t1_pretrained_dict)
+    main_model.t1_image_embedding_model.load_state_dict(t1_model_dict)
+
+    # load pre-trainted flair
+    flair_pretrained_dict = torch.load(cfg['training_parameters']['flair_pretrain'],map_location='cpu')['state_dict']
+    flair_pretrained_dict = {'.'.join(k[6:].split('.')[1:]): v for k, v in flair_pretrained_dict.items() if 'classifier.classifier.LinearClassifier' not in k}
+    flair_model_dict = main_model.flair_image_embedding_model.state_dict()
+    flair_model_dict.update(flair_pretrained_dict)
+    main_model.flair_image_embedding_model.load_state_dict(flair_model_dict)
 
     for name, param in main_model.named_parameters():
         if 'classifier.classifier.LinearClassifier' not in name:
             param.requires_grad = False
         else:
-            print(name, param)
+            pass
+
+    for name, param in main_model.named_parameters():
+        print(name, param.requires_grad)
 
     main_model = main_model.to(device)
+
+    print(summary(main_model, [(1, 96, 96, 96), (1, 96, 96, 96)]))
+    # exit(1)
 
     criterion = get_loss_criterion(cfg,type='CrossEntropyLoss').to(device)
 
@@ -117,21 +131,25 @@ def main():
     # if cfg['visdom']['server'] is not None:
     #     viz_plot = visualize_visdom(cfg)
 
-    #Load data
-    train_label_file_path_file = cfg['data']['path_to_tsv_train']
-    val_label_file_path_file = cfg['data']['path_to_tsv_val']
-    train_dataset = ADNI_3D(train_label_file_path_file,
-        n_label = cfg['model']['n_label'], percentage_usage=cfg['data']['percentage_usage'])
-    val_dataset = ADNI_3D(val_label_file_path_file, n_label = cfg['model']['n_label'])
-
+    #Load data, t1 and flair
+    print('a')
+    t1_train_label_file_path_file = cfg['t1_data']['path_to_tsv_train']
+    t1_val_label_file_path_file = cfg['t1_data']['path_to_tsv_val']
+    flair_train_label_file_path_file = cfg['flair_data']['path_to_tsv_train']
+    flair_val_label_file_path_file = cfg['flair_data']['path_to_tsv_val']
+    print('c')
+    train_dataset = ADNI_3D_T1_FLAIR(t1_train_label_file_path_file, flair_train_label_file_path_file, n_label = cfg['model']['n_label'], percentage_usage=cfg['t1_data']['percentage_usage'])
+    val_dataset = ADNI_3D_T1_FLAIR(t1_val_label_file_path_file, flair_val_label_file_path_file, n_label = cfg['model']['n_label'])
+    print('e')
     train_loader = torch.utils.data.DataLoader(
-        train_dataset, batch_size=cfg['data']['batch_size'], shuffle=True,
-        num_workers=cfg['data']['workers'], pin_memory=True, drop_last=True)
+        train_dataset, batch_size=cfg['t1_data']['batch_size'], shuffle=True,
+        num_workers=cfg['t1_data']['workers'], pin_memory=True, drop_last=True)
 
     val_loader = torch.utils.data.DataLoader(
-        val_dataset, batch_size=cfg['data']['val_batch_size'], shuffle=False,
-        num_workers=cfg['data']['workers'], pin_memory=True)
+        val_dataset, batch_size=cfg['t1_data']['val_batch_size'], shuffle=False,
+        num_workers=cfg['t1_data']['workers'], pin_memory=True)
 
+    print('b')
     ndata = len(train_dataset.subject_id)
     print('In total ', str(ndata), ' patients in training set')
 
@@ -140,8 +158,6 @@ def main():
         
         # train for one epoch
         train_loss, train_acc = train(cfg,train_loader, model, scheduler, criterion, main_optim, epoch)
-
-        
 
         # evaluate on validation set
         val_loss, val_acc, confusion_matrix, auc_outs = validate(cfg,val_loader,model,criterion,epoch)
@@ -190,7 +206,7 @@ def train(cfg, train_loader, main_model, scheduler,
 
     logit_all = []
     target_all = []
-    for i, (input, target, index, mmse, segment,age) in enumerate(train_loader):
+    for i, (t1, flair, target, index, mmse, segment,age) in enumerate(train_loader):
         
         # measure data loading time
         data_time.update(time.time() - end)
@@ -203,10 +219,11 @@ def train(cfg, train_loader, main_model, scheduler,
             age = None
 
         # compute output
-        input = input.to(device)
+        t1 = t1.to(device)
+        flair = flair.to(device)
         target = target.to(device)
 
-        main_loss, logit = main_model([input, age], target)
+        main_loss, logit = main_model([t1, flair, age], target)
         main_loss = main_loss.mean()
 
         logit_all.append(logit.data.cpu())
@@ -219,7 +236,7 @@ def train(cfg, train_loader, main_model, scheduler,
         main_optimizer.step()
 
         # measure accuracy and record loss
-        main_losses.update(main_loss.cpu().item(), input.size(0))
+        main_losses.update(main_loss.cpu().item(), t1.size(0))
 
         # measure elapsed time
         batch_time.update(time.time() - end)
@@ -256,10 +273,11 @@ def validate(cfg,val_loader,main_model,criterion,epoch):
     logit_all = []
     target_all = []
 
-    for i, (input, target, patient_idx, mmse, segment,age) in enumerate(val_loader):
+    for i, (t1, flair, target, patient_idx, mmse, segment,age) in enumerate(val_loader):
         # measure data loading time
         data_time.update(time.time() - end)
-        input = input.to(device)
+        t1 = t1.to(device)
+        flair = flair.to(device)
         target = target.to(device)
         if cfg['training_parameters']['use_age']:
             age = age.to(device)
@@ -267,7 +285,7 @@ def validate(cfg,val_loader,main_model,criterion,epoch):
             age = None
         # compute output
 
-        main_loss, logit = main_model([input, age], target)
+        main_loss, logit = main_model([t1, flair, age], target)
         main_loss = main_loss.mean()
 
         logit_all.append(torch.tensor(logit.data.cpu()))
@@ -281,7 +299,7 @@ def validate(cfg,val_loader,main_model,criterion,epoch):
         correct_all += correct[0].item()
 
         # measure accuracy and record loss
-        main_losses.update(main_loss.cpu().item(), input.size(0))
+        main_losses.update(main_loss.cpu().item(), t1.size(0))
 
         # measure elapsed time
         batch_time.update(time.time() - end)

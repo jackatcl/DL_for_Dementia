@@ -208,7 +208,7 @@ if __name__ == '__main__':
 
 
     # path to tsv file containing pre-processed image file path and label
-    path_to_tsv = '/gpfs/home/lc3424/capstone/2021_dementia/lc3424_workspace/experiments/20211102/t1_flair_file_match_with_reg_test.tsv'
+    path_to_tsv = '/gpfs/home/lc3424/capstone/2021_dementia/lc3424_workspace/experiments/20211102/label_and_file_path/20211206/t1_test.tsv'
 
     Test_dataset = ADNI_3D(path_label_file=path_to_tsv,  n_label = cfg['model']['n_label'])
     Test_loader = torch.utils.data.DataLoader(
@@ -219,7 +219,7 @@ if __name__ == '__main__':
 
     # Load model
     model = build_model(cfg)
-    model_file_name = 'volume_finetune_flair_train_perc_100.0_expansion_8'
+    model_file_name = 'volume_finetune_new_train_perc_100.0_expansion_8'
     # model_file_name = 'volume_retrain_train_perc_100.0_expansion_0'
 
     all_acc, all_balanced_acc, all_auc = evaluation_models(model_file_name,Test_loader, expansion_list = [8], use_age = False, norm_type= 'Instance')

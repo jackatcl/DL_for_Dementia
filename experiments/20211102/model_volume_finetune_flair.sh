@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=vol_ft_flair
+#SBATCH --job-name=ft_flair
 #SBATCH --partition=gpu4_dev
 #SBATCH --nodes=1
 #SBATCH --tasks-per-node=1

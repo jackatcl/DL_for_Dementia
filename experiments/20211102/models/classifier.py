@@ -24,7 +24,7 @@ class LinearClassifierAlexNet(nn.Module):
         self.classifier.add_module('Flatten', Flatten())
         #self.classifier.add_module('Dropout', nn.Dropout(p=0.3))
         self.classifier.add_module('LinearClassifier', nn.Linear(in_dim, n_hid))
-        #self.classifier.add_module('ReLU', nn.ReLU(inplace=True))
+        self.classifier.add_module('ReLU', nn.ReLU(inplace=True))
         
         #self.classifier.add_module('Dropout', nn.Dropout(p=0.3))
         self.classifier.add_module('LinearClassifier2', nn.Linear(n_hid, n_label))

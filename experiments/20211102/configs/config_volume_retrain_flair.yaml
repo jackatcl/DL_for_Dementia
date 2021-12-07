@@ -1,13 +1,13 @@
-file_name: ./saved_model/volume_retrain_flair/volume_retrain_flair
+file_name: ./saved_model/volume_retrain_flair_2/volume_retrain_flair
 data:
-  path_to_tsv_train: '/gpfs/home/lc3424/capstone/2021_dementia/lc3424_workspace/experiments/20211102/t1_flair_file_match_with_reg_train.tsv'
-  path_to_tsv_val: '/gpfs/home/lc3424/capstone/2021_dementia/lc3424_workspace/experiments/20211102/t1_flair_file_match_with_reg_val.tsv'
-  path_to_tsv_test: '/gpfs/home/lc3424/capstone/2021_dementia/lc3424_workspace/experiments/20211102/t1_flair_file_match_with_reg_test.tsv'
+  path_to_tsv_train: '/gpfs/home/lc3424/capstone/2021_dementia/lc3424_workspace/experiments/20211102/label_and_file_path/20211206/flair_train.tsv'
+  path_to_tsv_val: '/gpfs/home/lc3424/capstone/2021_dementia/lc3424_workspace/experiments/20211102/label_and_file_path/20211206/flair_val.tsv'
+  path_to_tsv_test: '/gpfs/home/lc3424/capstone/2021_dementia/lc3424_workspace/experiments/20211102/label_and_file_path/20211206/flair_test.tsv'
   batch_size: 4
   val_batch_size: 2
   workers: 4
   percentage_usage: 1.0
-exp_name: volume_retrain_flair
+exp_name: volume_retrain_flair_2
 visdom:
   port: 8064 
   # server: skygpu07 

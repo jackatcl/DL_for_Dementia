@@ -1,6 +1,7 @@
 from __future__ import print_function
 
 import torch.nn as nn
+import torch
 from torch.autograd import Function
 
 class alex_net_complete(nn.Module):
@@ -11,6 +12,26 @@ class alex_net_complete(nn.Module):
 
     def forward(self, input_image_variable, age_id=None):
         image_embedding = self.image_embedding_model(input_image_variable, age_id)
+        if self.classifier is None:
+            logit_res = image_embedding
+        else:
+            logit_res = self.classifier(image_embedding)
+
+        return logit_res
+
+class alex_net_cascaded_complete(nn.Module):
+    def __init__(self, t1_image_embedding_model, flair_image_embedding_model, classifier=None):
+        super(alex_net_cascaded_complete, self).__init__()
+        self.t1_image_embedding_model = t1_image_embedding_model
+        self.flair_image_embedding_model = flair_image_embedding_model
+        self.classifier = classifier
+
+    def forward(self, t1_image_input, flair_image_input, age_id=None):
+        t1_image_embedding = self.t1_image_embedding_model(t1_image_input, age_id)
+        flair_image_embedding = self.flair_image_embedding_model(flair_image_input, age_id)
+
+        image_embedding = torch.cat((t1_image_embedding, flair_image_embedding), dim=1)
+        
         if self.classifier is None:
             logit_res = image_embedding
         else:
