@@ -220,7 +220,7 @@ if __name__ == '__main__':
     # Load model
     model = build_model(cfg)
     # model_file_name = 'original/age_expansion_8'
-    model_file_name = 'volume_finetune_flair_train_perc_100.0_expansion_8'
+    model_file_name = 'volume_retrain_flair_2/volume_retrain_flair_train_perc_100.0_expansion_8'
 
     out = evaluation_models(model_file_name,Test_loader, expansion_list = [8], use_age = False, norm_type= 'Instance')
     res = Test_dataset.subject_tsv

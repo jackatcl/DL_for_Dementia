@@ -42,7 +42,7 @@ training_parameters:
   pretrain:  #dir to saved model here
   max_iter: 16000
   start_epoch: 0
-  epochs: 5
+  epochs: 15
   print_freq: 10
   max_grad_l2_norm:
   report_interval: 100
