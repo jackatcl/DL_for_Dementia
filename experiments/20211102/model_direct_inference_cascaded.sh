@@ -1,15 +1,13 @@
 #!/bin/bash
-#SBATCH --job-name=cascaded
-#SBATCH --partition=gpu4_medium
+#SBATCH --job-name=direct_inf
+#SBATCH --partition=gpu4_dev
 #SBATCH --nodes=1
 #SBATCH --tasks-per-node=1
 #SBATCH --cpus-per-task=1
 #SBATCH --mem-per-cpu=16g
-#SBATCH --time=2-24:00:00
+#SBATCH --time=4:00:00
 #SBATCH --output=slurm_%j.out
 #SBATCH --gres=gpu:1
-
-cd /gpfs/home/lc3424/capstone/2021_dementia/lc3424_workspace/experiments/20211102/
 
 module load cuda90/toolkit/9.1.176
 module load miniconda3
@@ -23,4 +21,4 @@ export LANG=en_US.UTF-8
 source /gpfs/data/razavianlab/capstone/2021_dementia/env_ben/miniconda3/bin/activate
 conda activate env_gpu_py36
 
-conda run -n env_gpu_py36 python3 /gpfs/home/lc3424/capstone/2021_dementia/lc3424_workspace/experiments/20211102/cascaded_model.py --config "/gpfs/home/lc3424/capstone/2021_dementia/lc3424_workspace/experiments/20211102/configs/config_volume_finetune_cascaded.yaml"
+conda run -n env_gpu_py36 python3 /gpfs/home/lc3424/capstone/2021_dementia/lc3424_workspace/experiments/20211102/model_eval_cascaded.py

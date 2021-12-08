@@ -36,7 +36,7 @@ class ADNI_3D_T1_FLAIR(data.Dataset):
         t1_subject_tsv.rename({'Path' : 't1_path'}, axis=1, inplace=True)
         flair_subject_tsv = pd.read_csv(flair_path_label_file, sep='\t').loc[:, ['Session', 'Path']]
         flair_subject_tsv.rename({'Path' : 'flair_path'}, axis=1, inplace=True)
-        self.subject_tsv = t1_subject_tsv.merge(flair_subject_tsv, how='left', on=['Session'])
+        self.subject_tsv = flair_subject_tsv.merge(t1_subject_tsv, how='left', on=['Session'])
         self.subject_tsv = self.subject_tsv[~self.subject_tsv.isna().any(axis=1)].drop_duplicates().reset_index(drop=True)
 
         self.subject_id = np.unique(self.subject_tsv.Subject.values)
