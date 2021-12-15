@@ -17,17 +17,19 @@ class Flatten(nn.Module):
         return feat.view(feat.size(0), -1)
 
 class LinearClassifierAlexNet(nn.Module):
-    def __init__(self, in_dim, n_hid=200, n_label=3):
+    def __init__(self, in_dim, n_hid=256, n_label=3):
         super(LinearClassifierAlexNet, self).__init__()
         
         self.classifier = nn.Sequential()
         self.classifier.add_module('Flatten', Flatten())
         #self.classifier.add_module('Dropout', nn.Dropout(p=0.3))
         self.classifier.add_module('LinearClassifier', nn.Linear(in_dim, n_hid))
-        self.classifier.add_module('ReLU', nn.ReLU(inplace=True))
+
+        self.classifier.add_module('LinearClassifier2', nn.Linear(n_hid, n_hid // 4))
+        # self.classifier.add_module('ReLU', nn.ReLU(inplace=True))
         
         #self.classifier.add_module('Dropout', nn.Dropout(p=0.3))
-        self.classifier.add_module('LinearClassifier2', nn.Linear(n_hid, n_label))
+        self.classifier.add_module('LinearClassifier3', nn.Linear(n_hid // 4, n_label))
         self.initilize()
 
     def initilize(self):

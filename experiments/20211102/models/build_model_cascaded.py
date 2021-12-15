@@ -11,7 +11,7 @@ from .LinearModel import alex_net_complete, alex_net_cascaded_complete
 
 
 def prepare_model_cascaded(arch = 'ours', in_channel=1, 
-    feat_dim=128, n_hid_main=128, n_label=3, out_dim = 128, 
+    feat_dim=128, n_hid_main=256, n_label=3, out_dim = 128, 
     expansion = 8, type_name='conv3x3x3', norm_type = 'Instance'):
 
     if arch == 'ours':
@@ -41,11 +41,12 @@ def build_model_cascaded(config, input_dim = 3):
         n_hid_main=n_hid_main,  n_label=n_label, out_dim = out_dim, 
         expansion= expansion, type_name=type_name, norm_type=norm_type)
 
-    # if config['training_parameters']['t1_pretrain'] is not None:
-    #     pretrained_dict = torch.load(config['training_parameters']['t1_pretrain'], map_location='cpu')['state_dict']
+    # if config['training_parameters']['pretrain'] is not None:
+    #     pretrained_dict = torch.load(config['training_parameters']['pretrain'], map_location='cpu')['state_dict']
     #     model_dict = main_model.state_dict()
     #     pretrained_dict = {k[6:]: v for k, v in pretrained_dict.items() if (k[6:]in model_dict.keys())}
     #     model_dict.update(pretrained_dict) 
     #     print(model_dict.keys())
     #     main_model.load_state_dict(model_dict)
+    #     print('pre-trained model loaded')
     return main_model

@@ -1,11 +1,11 @@
 #!/bin/bash
 #SBATCH --job-name=ft_flair
-#SBATCH --partition=gpu4_dev
+#SBATCH --partition=gpu4_medium
 #SBATCH --nodes=1
 #SBATCH --tasks-per-node=1
 #SBATCH --cpus-per-task=1
 #SBATCH --mem-per-cpu=16g
-#SBATCH --time=4:00:00
+#SBATCH --time=2-24:00:00
 #SBATCH --output=slurm_%j.out
 #SBATCH --gres=gpu:1
 

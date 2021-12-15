@@ -30,6 +30,7 @@ class alex_net_cascaded_complete(nn.Module):
         t1_image_embedding = self.t1_image_embedding_model(t1_image_input, age_id)
         flair_image_embedding = self.flair_image_embedding_model(flair_image_input, age_id)
 
+        # image_embedding = torch.add(t1_image_embedding, flair_image_embedding)
         image_embedding = torch.cat((t1_image_embedding, flair_image_embedding), dim=1)
         
         if self.classifier is None:

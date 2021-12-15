@@ -1,8 +1,8 @@
 file_name: ./saved_model/volume_retrain
 data:
-  path_to_tsv_train: '/gpfs/home/lc3424/capstone/2021_dementia/lc3424_workspace/experiments/20211102/volume_label_with_file_path_with_age_20211102_train.tsv'
-  path_to_tsv_val: '/gpfs/home/lc3424/capstone/2021_dementia/lc3424_workspace/experiments/20211102/volume_label_with_file_path_with_age_20211102_val.tsv'
-  path_to_tsv_test: '/gpfs/home/lc3424/capstone/2021_dementia/lc3424_workspace/experiments/20211102/volume_label_with_file_path_with_age_20211102_test.tsv'
+  path_to_tsv_train: '/gpfs/home/lc3424/capstone/2021_dementia/lc3424_workspace/experiments/20211102/label_and_file_path/20211206/t1_train.tsv'
+  path_to_tsv_val: '/gpfs/home/lc3424/capstone/2021_dementia/lc3424_workspace/experiments/20211102/label_and_file_path/20211206/t1_val.tsv'
+  path_to_tsv_test: '/gpfs/home/lc3424/capstone/2021_dementia/lc3424_workspace/experiments/20211102/label_and_file_path/20211206/t1_test.tsv'
   batch_size: 4
   val_batch_size: 2
   workers: 4

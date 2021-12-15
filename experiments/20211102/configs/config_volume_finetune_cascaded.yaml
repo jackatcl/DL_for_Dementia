@@ -38,11 +38,11 @@ mmse_model:
 training_parameters:
   use_age: False
   flair_pretrain: '/gpfs/home/lc3424/capstone/2021_dementia/lc3424_workspace/experiments/20211102/saved_model/volume_retrain_flair_2/volume_retrain_flair_train_perc_100.0_expansion_8_model_low_loss.pth.tar'
-  t1_pretrain: '/gpfs/home/lc3424/capstone/2021_dementia/lc3424_workspace/experiments/20211102/saved_model/volume_finetune_new_train_perc_100.0_expansion_8_model_low_loss.pth.tar'
-  pretrain:  #dir to saved model here
+  t1_pretrain: '/gpfs/home/lc3424/capstone/2021_dementia/lc3424_workspace/experiments/20211102/saved_model/volume_finetune_2/volume_finetune_new_train_perc_100.0_expansion_8_model_low_loss.pth.tar'
+  pretrain: 
   max_iter: 16000
   start_epoch: 0
-  epochs: 50
+  epochs: 150
   print_freq: 10
   max_grad_l2_norm:
   report_interval: 100

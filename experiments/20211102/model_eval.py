@@ -116,6 +116,7 @@ def run_epoch(model,val_loader,use_age=False):
     mmse_all = []
     patient_idx_all = []
     cdr_all = []
+    print(len(val_loader))
     for i, (input, target, patient_idx, mmse, cdr_sub, age_id) in enumerate(val_loader):
         if i % 20 == 0:
             print('Iteration: ',i)
@@ -208,7 +209,7 @@ if __name__ == '__main__':
 
 
     # path to tsv file containing pre-processed image file path and label
-    path_to_tsv = '/gpfs/home/lc3424/capstone/2021_dementia/lc3424_workspace/experiments/20211102/label_and_file_path/20211206/flair_test.tsv'
+    path_to_tsv = '/gpfs/home/lc3424/capstone/2021_dementia/lc3424_workspace/experiments/20211102/label_and_file_path/20211206/t1_test.tsv'
 
     Test_dataset = ADNI_3D(path_label_file=path_to_tsv,  n_label = cfg['model']['n_label'])
     Test_loader = torch.utils.data.DataLoader(
@@ -220,7 +221,7 @@ if __name__ == '__main__':
     # Load model
     model = build_model(cfg)
     # /gpfs/home/lc3424/capstone/2021_dementia/lc3424_workspace/experiments/20211102/saved_model/volume_retrain_flair_2/volume_retrain_flair_train_perc_100.0_expansion_8_model_low_loss.pth.tar
-    model_file_name = 'volume_retrain_flair_2/volume_retrain_flair_train_perc_100.0_expansion_8'
+    model_file_name = 'volume_retrain/volume_retrain_train_perc_100.0_expansion_8'
     # model_file_name = 'volume_retrain_train_perc_100.0_expansion_0'
 
     all_acc, all_balanced_acc, all_auc = evaluation_models(model_file_name,Test_loader, expansion_list = [8], use_age = False, norm_type= 'Instance')

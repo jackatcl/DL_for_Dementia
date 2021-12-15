@@ -116,6 +116,7 @@ def run_epoch(model,val_loader,use_age=False):
     mmse_all = []
     patient_idx_all = []
     cdr_all = []
+    print(len(val_loader))
     for i, (t1, flair, target, patient_idx, mmse, cdr_sub, age_id) in enumerate(val_loader):
         if i % 20 == 0:
             print('Iteration: ',i)
@@ -151,6 +152,7 @@ def evaluation_models(model_name,data_loader, expansion_list = [8],  num_trails 
         old_ks = list(pretrained_dict.keys()).copy()
         model_dict = model.state_dict()
         pretrained_dict = {k[6:]: v for k, v in pretrained_dict.items() if (k[6:]in model_dict.keys())}
+        # print(pretrained_dict)
         model_dict.update(pretrained_dict) 
         model.load_state_dict(model_dict)
         model = model.to(device)
